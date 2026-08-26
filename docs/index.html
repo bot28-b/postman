@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA Learning API — Postman Tutorial</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>QA Learning API</h1>
+      <p class="tagline">Learn API testing with Postman — no local setup</p>
+    </div>
+  </header>
+
+  <nav class="container">
+    <a href="#urls">Live URLs</a>
+    <a href="#setup">Postman Setup</a>
+    <a href="#concepts">Concepts</a>
+    <a href="#endpoints">Endpoints</a>
+    <a href="#exercises">Exercises</a>
+  </nav>
+
+  <main class="container">
+    <section id="urls" class="card highlight-card">
+      <h2>Live URLs — Share These</h2>
+      <p>Push this repo to GitHub (public). No server or npm install needed.</p>
+      <table>
+        <thead><tr><th>Resource</th><th>URL</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Documentation</strong></td>
+            <td><code>https://bot28-b.github.io/postman/</code></td>
+          </tr>
+          <tr>
+            <td><strong>CRUD API</strong> (users, products, orders)</td>
+            <td><code>https://my-json-server.typicode.com/bot28-b/postman</code></td>
+          </tr>
+          <tr>
+            <td><strong>Health check</strong></td>
+            <td><code>https://bot28-b.github.io/postman/health.json</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="note">The CRUD API reads <code>db.json</code> from your GitHub repo automatically. After pushing, wait 1–2 minutes for it to sync.</p>
+    </section>
+
+    <section id="intro" class="card">
+      <h2>Welcome, QA Engineer!</h2>
+      <p>Open Postman, import the collection, and start testing immediately. This covers:</p>
+      <ul class="checklist">
+        <li>GET, POST, PUT, PATCH, DELETE</li>
+        <li>Query parameters, filtering &amp; pagination</li>
+        <li>Request headers</li>
+        <li>Bearer token authentication</li>
+        <li>Status code validation (200, 404, 500…)</li>
+        <li>Response body assertions &amp; test scripts</li>
+        <li>Environment variables &amp; Collection Runner</li>
+      </ul>
+    </section>
+
+    <section id="setup" class="card">
+      <h2>1. Enable GitHub Pages (one-time, repo owner)</h2>
+      <ol>
+        <li>Push this repo to GitHub (must be <strong>public</strong> for the free API)</li>
+        <li>Go to repo <strong>Settings → Pages</strong></li>
+        <li>Under <strong>Build and deployment → Source</strong>, select <strong>GitHub Actions</strong></li>
+        <li>Push to <code>main</code> — docs deploy automatically</li>
+      </ol>
+
+      <h2>2. Import into Postman (learners)</h2>
+      <ol>
+        <li>Open Postman → <strong>Import</strong></li>
+        <li>Import from GitHub: <a href="https://github.com/bot28-b/postman/tree/main/postman">postman/ folder</a></li>
+        <li>Import both files:
+          <ul>
+            <li><code>QA-Learning-API.postman_collection.json</code></li>
+            <li><code>QA-Learning-API.postman_environment.json</code></li>
+          </ul>
+        </li>
+        <li>Select <strong>QA Learning API - Live (GitHub)</strong> environment (top-right)</li>
+        <li>Run <strong>Health Check (GitHub Pages)</strong> → expect <strong>200 OK</strong></li>
+        <li>Run <strong>Get All Users</strong> → expect a JSON array</li>
+      </ol>
+    </section>
+
+    <section id="concepts" class="card">
+      <h2>2. API Testing Concepts</h2>
+
+      <div class="concept">
+        <h3>HTTP Methods</h3>
+        <table>
+          <thead><tr><th>Method</th><th>Purpose</th><th>Try in Postman</th></tr></thead>
+          <tbody>
+            <tr><td><code>GET</code></td><td>Read data</td><td>Get All Users</td></tr>
+            <tr><td><code>POST</code></td><td>Create</td><td>Create User</td></tr>
+            <tr><td><code>PUT</code></td><td>Full replace</td><td>Update User (PUT)</td></tr>
+            <tr><td><code>PATCH</code></td><td>Partial update</td><td>Partial Update (PATCH)</td></tr>
+            <tr><td><code>DELETE</code></td><td>Remove</td><td>Delete User</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="concept">
+        <h3>Status Codes</h3>
+        <table>
+          <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>200</code></td><td>OK — success</td></tr>
+            <tr><td><code>201</code></td><td>Created — new resource</td></tr>
+            <tr><td><code>400</code></td><td>Bad Request</td></tr>
+            <tr><td><code>401</code></td><td>Unauthorized — missing token</td></tr>
+            <tr><td><code>404</code></td><td>Not Found</td></tr>
+            <tr><td><code>500</code></td><td>Server Error</td></tr>
+          </tbody>
+        </table>
+        <p>Practice in folder <strong>8. Status Codes</strong> in the Postman collection.</p>
+      </div>
+    </section>
+
+    <section id="endpoints" class="card">
+      <h2>3. API Endpoints</h2>
+
+      <h3>CRUD — base URL: <code>https://my-json-server.typicode.com/bot28-b/postman</code></h3>
+      <table class="endpoints">
+        <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>GET</td><td>/users</td><td>List all users</td></tr>
+          <tr><td>GET</td><td>/users/1</td><td>Get user by ID</td></tr>
+          <tr><td>POST</td><td>/users</td><td>Create user (JSON body)</td></tr>
+          <tr><td>PUT</td><td>/users/1</td><td>Replace user</td></tr>
+          <tr><td>PATCH</td><td>/users/1</td><td>Partial update</td></tr>
+          <tr><td>DELETE</td><td>/users/:id</td><td>Delete user</td></tr>
+          <tr><td>GET</td><td>/products</td><td>List products</td></tr>
+          <tr><td>GET</td><td>/products?category=electronics</td><td>Filter by query param</td></tr>
+          <tr><td>GET</td><td>/users?_page=1&amp;_limit=2</td><td>Pagination</td></tr>
+          <tr><td>GET</td><td>/orders</td><td>List orders</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Headers, Auth, Status &amp; Delay — via httpbin.org (in collection)</h3>
+      <table class="endpoints">
+        <thead><tr><th>Concept</th><th>Endpoint</th></tr></thead>
+        <tbody>
+          <tr><td>Echo headers</td><td>GET https://httpbin.org/headers</td></tr>
+          <tr><td>Bearer auth</td><td>GET https://httpbin.org/bearer</td></tr>
+          <tr><td>Status codes</td><td>GET https://httpbin.org/status/404</td></tr>
+          <tr><td>Response delay</td><td>GET https://httpbin.org/delay/2</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="postman" class="card">
+      <h2>4. Postman Tips</h2>
+      <div class="step">
+        <h3>Tests tab</h3>
+        <p>Every request has example tests. After Send, check <strong>Test Results</strong>:</p>
+        <pre><code>pm.test('Status is 200', () => pm.response.to.have.status(200));
+pm.test('Returns an array', () => pm.expect(pm.response.json()).to.be.an('array'));</code></pre>
+      </div>
+      <div class="step">
+        <h3>Collection Runner</h3>
+        <p>Click the collection → <strong>Run</strong> → run all folders → see pass/fail for every test.</p>
+      </div>
+      <div class="step">
+        <h3>Environment variables</h3>
+        <p><code>{{baseUrl}}</code>, <code>{{docsUrl}}</code>, <code>{{httpbinUrl}}</code>, <code>{{token}}</code> — change in one place for all requests.</p>
+      </div>
+    </section>
+
+    <section id="exercises" class="card">
+      <h2>5. Practice Exercises</h2>
+      <ol class="exercises">
+        <li>Run <strong>Health Check</strong> and <strong>Get All Users</strong> — all tests green</li>
+        <li><strong>POST</strong> a new user, then <strong>GET</strong> by the returned ID</li>
+        <li><strong>Filter</strong> electronics products — assert every item has <code>category: electronics</code></li>
+        <li>Call <strong>Bearer Token - Valid</strong> then <strong>Missing (401)</strong></li>
+        <li>Run all <strong>Status Codes</strong> requests — assert each code matches</li>
+        <li>Run <strong>Response Delay</strong> — assert response time &gt; 2000ms</li>
+        <li>Run the <strong>full Collection Runner</strong> — aim for 100% pass</li>
+        <li>Write your own test on <strong>Get All Products</strong> — check every product has <code>price</code></li>
+      </ol>
+    </section>
+
+    <section class="card repo-links">
+      <h2>Repository</h2>
+      <p>
+        <a href="https://github.com/bot28-b/postman">GitHub Repo</a> ·
+        <a href="https://github.com/bot28-b/postman/tree/main/postman">Postman Collection</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Built for QA engineers learning Postman &amp; API testing</p>
+    </div>
+  </footer>
+</body>
+</html>

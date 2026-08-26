@@ -1,0 +1,64 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Alice Johnson",
+      "email": "alice@example.com",
+      "role": "admin",
+      "active": true
+    },
+    {
+      "id": 2,
+      "name": "Bob Smith",
+      "email": "bob@example.com",
+      "role": "user",
+      "active": true
+    },
+    {
+      "id": 3,
+      "name": "Carol Davis",
+      "email": "carol@example.com",
+      "role": "user",
+      "active": false
+    }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Laptop",
+      "price": 999.99,
+      "category": "electronics",
+      "inStock": true
+    },
+    {
+      "id": 2,
+      "name": "Desk Chair",
+      "price": 249.5,
+      "category": "furniture",
+      "inStock": true
+    },
+    {
+      "id": 3,
+      "name": "USB Cable",
+      "price": 12.99,
+      "category": "electronics",
+      "inStock": false
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "userId": 1,
+      "productId": 1,
+      "quantity": 1,
+      "status": "delivered"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "productId": 2,
+      "quantity": 2,
+      "status": "pending"
+    }
+  ]
+}

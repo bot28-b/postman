@@ -1,0 +1,516 @@
+{
+  "info": {
+    "name": "QA Learning API - Postman Collection",
+    "description": "Learn API testing with Postman — no local setup needed.\n\n**Live URLs (after you push to GitHub):**\n- Docs: https://bot28-b.github.io/postman/\n- CRUD API: https://my-json-server.typicode.com/bot28-b/postman\n\nImport `QA-Learning-API.postman_environment.json` and select the Live environment.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "docsUrl",
+      "value": "https://bot28-b.github.io/postman"
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://my-json-server.typicode.com/bot28-b/postman"
+    },
+    {
+      "key": "httpbinUrl",
+      "value": "https://httpbin.org"
+    },
+    {
+      "key": "token",
+      "value": "qa-learning-token-12345"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. GET Requests",
+      "item": [
+        {
+          "name": "Health Check (GitHub Pages)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{docsUrl}}/health.json"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('API is live', () => {",
+                  "    pm.expect(pm.response.json().status).to.eql('ok');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns an array', () => pm.expect(pm.response.json()).to.be.an('array'));",
+                  "pm.test('Users have required fields', () => {",
+                  "    const users = pm.response.json();",
+                  "    if (users.length > 0) {",
+                  "        pm.expect(users[0]).to.have.property('id');",
+                  "        pm.expect(users[0]).to.have.property('name');",
+                  "        pm.expect(users[0]).to.have.property('email');",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users/1"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('User ID matches', () => pm.expect(pm.response.json().id).to.eql(1));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get User - Not Found (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/users/9999"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 404', () => pm.response.to.have.status(404));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/products"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns products array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. POST Requests",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New QA Tester\",\n  \"email\": \"newqa@example.com\",\n  \"role\": \"user\",\n  \"active\": true\n}"
+            },
+            "url": "{{baseUrl}}/users"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('User created with ID', () => {",
+                  "    const user = pm.response.json();",
+                  "    pm.expect(user).to.have.property('id');",
+                  "    pm.collectionVariables.set('createdUserId', user.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST JSON Body (httpbin echo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"role\": \"qa\"\n}"
+            },
+            "url": "{{httpbinUrl}}/post"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Body was echoed back', () => {",
+                  "    const sent = JSON.parse(pm.response.json().data);",
+                  "    pm.expect(sent.name).to.eql('Test User');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. PUT & PATCH",
+      "item": [
+        {
+          "name": "Update User (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"Alice Updated\",\n  \"email\": \"alice.updated@example.com\",\n  \"role\": \"admin\",\n  \"active\": true\n}"
+            },
+            "url": "{{baseUrl}}/users/1"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Name updated', () => pm.expect(pm.response.json().name).to.eql('Alice Updated'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Partial Update (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}"
+            },
+            "url": "{{baseUrl}}/users/2"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Active set to false', () => pm.expect(pm.response.json().active).to.eql(false));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. DELETE",
+      "item": [
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/users/{{createdUserId}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Query Parameters",
+      "item": [
+        {
+          "name": "Filter Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?category=electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [{ "key": "category", "value": "electronics" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('All products are electronics', () => {",
+                  "    pm.response.json().forEach(p => pm.expect(p.category).to.eql('electronics'));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sort Products by Price",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/products?_sort=price&_order=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["products"],
+              "query": [
+                { "key": "_sort", "value": "price" },
+                { "key": "_order", "value": "asc" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Sorted by price ascending', () => {",
+                  "    const products = pm.response.json();",
+                  "    for (let i = 1; i < products.length; i++) {",
+                  "        pm.expect(products[i].price).to.be.at.least(products[i-1].price);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Paginated Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users?_page=1&_limit=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "_page", "value": "1" },
+                { "key": "_limit", "value": "2" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Returns at most 2 users', () => {",
+                  "    pm.expect(pm.response.json().length).to.be.at.most(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "6. Headers",
+      "item": [
+        {
+          "name": "Echo Headers (httpbin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-Custom-Header", "value": "Postman-Learning" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": "{{httpbinUrl}}/headers"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Custom header echoed back', () => {",
+                  "    pm.expect(pm.response.json().headers['X-Custom-Header']).to.eql('Postman-Learning');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "7. Authentication",
+      "item": [
+        {
+          "name": "Bearer Token - Valid",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{httpbinUrl}}/bearer"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Token received by server', () => {",
+                  "    pm.expect(pm.response.json().authenticated).to.eql(true);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bearer Token - Missing (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{httpbinUrl}}/bearer"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 401', () => pm.response.to.have.status(401));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "8. Status Codes",
+      "item": [
+        {
+          "name": "Status 200 OK",
+          "request": { "method": "GET", "header": [], "url": "{{httpbinUrl}}/status/200" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status is 200', () => pm.response.to.have.status(200));"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Status 201 Created",
+          "request": { "method": "GET", "header": [], "url": "{{httpbinUrl}}/status/201" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status is 201', () => pm.response.to.have.status(201));"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Status 400 Bad Request",
+          "request": { "method": "GET", "header": [], "url": "{{httpbinUrl}}/status/400" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status is 400', () => pm.response.to.have.status(400));"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Status 404 Not Found",
+          "request": { "method": "GET", "header": [], "url": "{{httpbinUrl}}/status/404" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status is 404', () => pm.response.to.have.status(404));"], "type": "text/javascript" } }]
+        },
+        {
+          "name": "Status 500 Server Error",
+          "request": { "method": "GET", "header": [], "url": "{{httpbinUrl}}/status/500" },
+          "event": [{ "listen": "test", "script": { "exec": ["pm.test('Status is 500', () => pm.response.to.have.status(500));"], "type": "text/javascript" } }]
+        }
+      ]
+    },
+    {
+      "name": "9. Performance",
+      "item": [
+        {
+          "name": "Response Delay (2 seconds)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{httpbinUrl}}/delay/2"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Response took at least 2 seconds', () => {",
+                  "    pm.expect(pm.response.responseTime).to.be.above(2000);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
